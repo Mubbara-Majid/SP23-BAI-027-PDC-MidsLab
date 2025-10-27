@@ -1,0 +1,60 @@
+-------------------------------------------------
+PDC Lab Exam Report
+Name: Mubbara Majid
+Roll No: SP23-BAI-027
+-------------------------------------------------
+
+Task 1: sequential_process.py
+Task 2: parallel_process.py
+Task 3: distributed_sim.py
+
+=================================================
+Comparison of Execution Times
+=================================================
+
+Table comparing the execution times gathered from
+the script runs.
+
+| Method      | Workers | Time (s) |
+| :---        | /Nodes  | :---     |
+| Sequential  | 1       | 0.34 s   |
+| Parallel    | 1       | 0.95 s   |
+| Parallel    | 2       | 0.83 s   |
+| Parallel    | 4       | 1.28 s   |
+| Parallel    | 8       | 1.98 s   |
+| Distributed | 2       | 1.1 s    |
+
+=================================================
+Analysis of Best Number of Workers
+=================================================
+
+Based on the execution data, the best configuration was 2 workers, which completed in 0.83 seconds.
+
+This was the only parallel configuration to show any speedup (1.16x) relative to the 1-worker parallel baseline (0.95s). 
+However, it's critical to note that the simple sequential script (0.34s) was significantly 
+faster than any of the parallel or distributed runs.
+
+The reason for this slowdown is parallel overhead. 
+The task of processing 57 small images is extremely fast. 
+The time required for the main process to create, manage, and synchronize new worker processes (the overhead) 
+is much greater than the time saved by parallelizing the work. As we increased workers to 4 and 8, 
+the overhead cost grew, leading to progressively slower times.
+
+=================================================
+Discussion on Performance & Bottlenecks
+=================================================
+
+In this experiment, parallelism did not improve overall performance compared to the simple sequential script. 
+The 2-worker configuration only offered a slight improvement over the 1-worker parallel baseline, 
+which was already ~3x slower than the sequential run due to process creation overhead.
+
+The primary bottleneck in this scenario is overhead, not computation. 
+The total workload is too small and completes too quickly (0.34s) for parallelism to be beneficial. 
+The cost of setting up the multiprocessing pool and communicating with worker processes dominated the execution time.
+
+Other potential bottlenecks that still exist include:
+1.  Disk I/O: All processes are still competing to read 57 images from and write 57 images to the same physical disk, 
+which can become a chokepoint.
+2.  Task Granularity: The tasks (processing one image) are "too small" (too fast). 
+The overhead of scheduling each tiny task becomes significant. Grouping images into larger chunks for 
+each worker could have reduced this.
