@@ -58,3 +58,5 @@ which can become a chokepoint.
 2.  Task Granularity: The tasks (processing one image) are "too small" (too fast). 
 The overhead of scheduling each tiny task becomes significant. Grouping images into larger chunks for 
 each worker could have reduced this.
+
+Github repo: https://github.com/Mubbara-Majid/SP23-BAI-027-PDC-MidsLab
